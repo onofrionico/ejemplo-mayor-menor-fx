@@ -20,3 +20,6 @@ En Windows (cmd / PowerShell): `mvnw.cmd javafx:run`.
 Desde IntelliJ: abrí la carpeta como proyecto Maven y ejecutá la clase `Lanzador`.
 
 ## Créditos de imágenes
+
+- **Cartas** (`src/main/resources/img/cartas/`): mazo de Heraclio Fournier de 1878, de Ignacio Díaz Olano, Heraclio Fournier González y Emilio Soubrier. **Dominio público.** Fuente: [Wikimedia Commons — Heraclio Fournier’s 1878 card deck](https://commons.wikimedia.org/wiki/Category:Heraclio_Fournier%E2%80%99s_1878_card_deck). Reducidas a 200 px de ancho y renombradas (`espada-1.png`, `reverso.png`, ...).
+- **Íconos** de los botones (`src/main/resources/img/iconos/`): generados por el equipo docente de la asignatura.

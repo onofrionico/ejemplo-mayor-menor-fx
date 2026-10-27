@@ -6,6 +6,7 @@ import ar.edu.unlu.mayormenor.demos.DemoLayouts;
 import ar.edu.unlu.mayormenor.demos.DemoMenus;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.WritableImage;
@@ -35,6 +36,8 @@ public class GenerarCapturas {
                 capturar(DemoMenus.crearRaiz(), 420, 250, "demo-menus.png");
                 capturar(new DemoEventos().crearRaiz(), 380, 280, "demo-eventos.png");
                 capturar(DemoDialogos.crearRaiz(), 320, 380, "demo-dialogos.png");
+                capturar(FXMLLoader.load(GenerarCapturas.class.getResource("/fxml/menu.fxml")), 420, 360, "juego-menu.png");
+                capturar(FXMLLoader.load(GenerarCapturas.class.getResource("/fxml/juego.fxml")), 420, 520, "juego-mesa.png");
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
