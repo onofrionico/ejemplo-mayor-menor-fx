@@ -6,7 +6,7 @@ Se muestra una carta del mazo español; apostás si la siguiente va a ser **mayo
 
 ## Requisitos
 
-- JDK 17 o superior (recomendado: **JDK 21**).
+- JDK 17 o superior (recomendado: **JDK 21**). Con IntelliJ no hace falta instalarlo aparte: `File → Project Structure → Project → SDK → Download JDK...`. Para usar `mvnw` desde una terminal sí necesitás un JDK instalado en el sistema (por ejemplo [Eclipse Temurin](https://adoptium.net/temurin/releases/?version=21), que es un JDK, no el IDE Eclipse).
 - No hace falta instalar Maven ni descargar JavaFX: el proyecto trae el *Maven Wrapper* (`mvnw`) y Maven baja JavaFX solo.
 
 ## Cómo correrlo
