@@ -30,6 +30,12 @@ public class VistaGrafica implements IVista {
         this.stage = stage;
         this.controlador = controlador;
         stage.setTitle("Mayor o Menor");
+        // Al cerrar la ventana principal, cerramos también la de reglas (si quedó abierta)
+        stage.setOnCloseRequest(e -> {
+            if (juego != null) {
+                juego.cerrarReglas();
+            }
+        });
     }
 
     @Override
@@ -40,6 +46,10 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarJuego() {
+        // Si había una mesa anterior con las reglas abiertas, las cerramos: la mesa nueva tiene su propio controlador
+        if (juego != null) {
+            juego.cerrarReglas();
+        }
         juego = cargar("/fxml/juego.fxml");
         juego.setControlador(controlador);
     }

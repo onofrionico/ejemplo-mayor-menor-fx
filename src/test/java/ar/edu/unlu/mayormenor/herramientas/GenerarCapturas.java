@@ -15,6 +15,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 
@@ -82,7 +85,43 @@ public class GenerarCapturas {
         if (!"Puntaje: 0".equals(puntaje.getText())) {
             throw new IllegalStateException("Jugar de nuevo no reinició el puntaje: " + puntaje.getText());
         }
+        // Ayuda > Reglas dos veces: debe quedar UNA sola ventana de reglas, no modal
+        menu(stage, "Reglas");
+        menu(stage, "Reglas");
+        long ventanas = Window.getWindows().stream().filter(w -> w != stage && w.isShowing()).count();
+        if (ventanas != 1) {
+            throw new IllegalStateException("Se esperaba 1 ventana de reglas y hay " + ventanas);
+        }
+        // Con las reglas abiertas se puede seguir jugando (no modal)
         clic(stage, "#btnMenor");      // 11 de espadas: error
+
+        // Partida > Nueva desde la mesa: hay que volver a la mesa antes
+        clic(stage, "#btnJugarDeNuevo");
+        menu(stage, "Nueva");
+        // Con las reglas todavía abiertas, Reglas de nuevo no debe abrir otra ventana
+        menu(stage, "Reglas");
+        long reglasAbiertas = Window.getWindows().stream().filter(w -> w != stage && w.isShowing()).count();
+        if (reglasAbiertas != 1) {
+            throw new IllegalStateException("Después de Nueva, se esperaba 1 ventana de reglas y hay " + reglasAbiertas);
+        }
+        Label otra = (Label) stage.getScene().lookup("#lblPuntaje");
+        if (!"Puntaje: 0".equals(otra.getText())) {
+            throw new IllegalStateException("Partida > Nueva no reinició el puntaje");
+        }
+        guardar(stage, "juego-mesa-menu.png");
+
+        // Cerrar la ventana principal con la X cierra también las reglas
+        menu(stage, "Reglas");
+        stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+        stage.close();
+        if (Window.getWindows().stream().anyMatch(Window::isShowing)) {
+            throw new IllegalStateException("Quedó una ventana abierta al cerrar la principal");
+        }
+        stage.show();
+        vista.mostrarJuego();
+        modelo.iniciar();
+        clic(stage, "#btnMayor");      // 11 de espadas: acierto
+        clic(stage, "#btnMayor");      // 3 de copas: error
         clic(stage, "#btnVolver");     // vuelve al menú
         if (stage.getScene().lookup("#btnJugar") == null) {
             throw new IllegalStateException("Volver al menú no mostró el menú");
@@ -96,6 +135,17 @@ public class GenerarCapturas {
             throw new IllegalStateException("No se encontró " + selector);
         }
         boton.fire();
+    }
+
+    /** "Hace clic" en un ítem de la barra de menú buscándolo por su texto. */
+    private static void menu(Stage stage, String texto) {
+        MenuBar barra = (MenuBar) stage.getScene().lookup(".menu-bar");
+        barra.getMenus().stream()
+                .flatMap(m -> m.getItems().stream())
+                .filter(i -> texto.equals(i.getText()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No hay ítem de menú " + texto))
+                .fire();
     }
 
     private static void capturar(Parent raiz, double ancho, double alto, String archivo) throws Exception {
