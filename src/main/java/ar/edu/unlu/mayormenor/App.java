@@ -1,10 +1,12 @@
 package ar.edu.unlu.mayormenor;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 /**
  * Punto de entrada de la aplicacion JavaFX.
@@ -14,11 +16,12 @@ import javafx.stage.Stage;
 public class App extends Application {
 
     @Override
-    public void start(Stage stage) {
-        Label mensaje = new Label("¡JavaFX funciona!");
-        StackPane raiz = new StackPane(mensaje);
+    public void start(Stage stage) throws IOException {
+        // FXMLLoader lee el archivo, crea el controlador, inyecta los @FXML y devuelve el nodo raíz.
+        // La ruta empieza con "/" porque es relativa a src/main/resources.
+        Parent raiz = FXMLLoader.load(getClass().getResource("/fxml/menu.fxml"));
         stage.setTitle("Mayor o Menor");
-        stage.setScene(new Scene(raiz, 400, 300));
+        stage.setScene(new Scene(raiz));
         stage.show();
     }
 
