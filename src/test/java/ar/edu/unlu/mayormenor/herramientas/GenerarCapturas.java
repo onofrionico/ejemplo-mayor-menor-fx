@@ -1,23 +1,34 @@
 package ar.edu.unlu.mayormenor.herramientas;
 
+import ar.edu.unlu.mayormenor.controlador.Controlador;
 import ar.edu.unlu.mayormenor.demos.DemoDialogos;
 import ar.edu.unlu.mayormenor.demos.DemoEventos;
 import ar.edu.unlu.mayormenor.demos.DemoLayouts;
 import ar.edu.unlu.mayormenor.demos.DemoMenus;
+import ar.edu.unlu.mayormenor.modelo.Carta;
+import ar.edu.unlu.mayormenor.modelo.Mazo;
+import ar.edu.unlu.mayormenor.modelo.Partida;
+import ar.edu.unlu.mayormenor.vista.VistaGrafica;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.WritableImage;
+import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
+
+import static ar.edu.unlu.mayormenor.modelo.Palo.*;
 
 /**
  * Herramienta del equipo docente (no es un test): genera las capturas de pantalla
  * que usa el post de la autoguía, a partir del código real del repo.
+ * Para las pantallas del juego arma el MVC completo con un mazo fijo y "hace clic"
+ * con {@code Button.fire()}, así también sirve como prueba de humo de la interfaz.
  * <p>
  * ./mvnw test-compile exec:java -Dexec.mainClass=ar.edu.unlu.mayormenor.herramientas.GenerarCapturas -Dexec.classpathScope=test
  * <p>
@@ -36,8 +47,7 @@ public class GenerarCapturas {
                 capturar(DemoMenus.crearRaiz(), 420, 250, "demo-menus.png");
                 capturar(new DemoEventos().crearRaiz(), 380, 280, "demo-eventos.png");
                 capturar(DemoDialogos.crearRaiz(), 320, 380, "demo-dialogos.png");
-                capturar(FXMLLoader.load(GenerarCapturas.class.getResource("/fxml/menu.fxml")), 420, 360, "juego-menu.png");
-                capturar(FXMLLoader.load(GenerarCapturas.class.getResource("/fxml/juego.fxml")), 420, 520, "juego-mesa.png");
+                capturarJuego();
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -48,9 +58,40 @@ public class GenerarCapturas {
         Platform.exit();
     }
 
-    static void capturar(Parent raiz, double ancho, double alto, String archivo) throws Exception {
-        Scene scene = new Scene(raiz, ancho, alto);
-        WritableImage imagen = scene.snapshot(null);
+    private static void capturarJuego() throws Exception {
+        Partida modelo = new Partida(() -> new Mazo(List.of(
+                new Carta(5, ORO), new Carta(11, ESPADA), new Carta(3, COPA), new Carta(7, BASTO))));
+        Controlador controlador = new Controlador(modelo);
+        Stage stage = new Stage();
+        VistaGrafica vista = new VistaGrafica(stage, controlador);
+        controlador.setVista(vista);
+
+        vista.mostrarMenu();
+        guardar(stage, "juego-menu.png");
+
+        clic(stage, "#btnJugar");      // menú → mesa con el 5 de oros
+        clic(stage, "#btnMayor");      // 11 de espadas: acierto
+        guardar(stage, "juego-mesa.png");
+        stage.close();
+    }
+
+    private static void clic(Stage stage, String selector) {
+        Button boton = (Button) stage.getScene().lookup(selector);
+        if (boton == null) {
+            throw new IllegalStateException("No se encontró " + selector);
+        }
+        boton.fire();
+    }
+
+    private static void capturar(Parent raiz, double ancho, double alto, String archivo) throws Exception {
+        escribir(new Scene(raiz, ancho, alto).snapshot(null), archivo);
+    }
+
+    private static void guardar(Stage stage, String archivo) throws Exception {
+        escribir(stage.getScene().snapshot(null), archivo);
+    }
+
+    private static void escribir(WritableImage imagen, String archivo) throws Exception {
         File salida = new File(DESTINO, archivo);
         ImageIO.write(SwingFXUtils.fromFXImage(imagen, null), "png", salida);
         System.out.println("Captura: " + salida.getPath());

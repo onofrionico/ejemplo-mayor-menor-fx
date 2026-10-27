@@ -1,28 +1,26 @@
 package ar.edu.unlu.mayormenor;
 
+import ar.edu.unlu.mayormenor.controlador.Controlador;
+import ar.edu.unlu.mayormenor.modelo.Mazo;
+import ar.edu.unlu.mayormenor.modelo.Partida;
+import ar.edu.unlu.mayormenor.vista.VistaGrafica;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.util.Random;
 
 /**
- * Punto de entrada de la aplicacion JavaFX.
- * <p>
- * JavaFX llama a {@link #start(Stage)} y nos entrega la primera ventana ({@code Stage}).
+ * Punto de entrada de la aplicacion JavaFX: arma el MVC y muestra el menú.
  */
 public class App extends Application {
 
     @Override
-    public void start(Stage stage) throws IOException {
-        // FXMLLoader lee el archivo, crea el controlador, inyecta los @FXML y devuelve el nodo raíz.
-        // La ruta empieza con "/" porque es relativa a src/main/resources.
-        Parent raiz = FXMLLoader.load(getClass().getResource("/fxml/menu.fxml"));
-        stage.setTitle("Mayor o Menor");
-        stage.setScene(new Scene(raiz));
-        stage.show();
+    public void start(Stage stage) {
+        Partida modelo = new Partida(() -> Mazo.mezclado(new Random()));
+        Controlador controlador = new Controlador(modelo);
+        VistaGrafica vista = new VistaGrafica(stage, controlador);
+        controlador.setVista(vista);
+        vista.mostrarMenu();
     }
 
     public static void main(String[] args) {

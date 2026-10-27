@@ -1,5 +1,8 @@
 package ar.edu.unlu.mayormenor.vista;
 
+import ar.edu.unlu.mayormenor.controlador.Controlador;
+import ar.edu.unlu.mayormenor.modelo.Apuesta;
+import ar.edu.unlu.mayormenor.modelo.Carta;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -29,19 +32,35 @@ public class JuegoController {
     @FXML
     private Button btnMenor;
 
+    private Controlador controlador;
+
     /** JavaFX llama a este método después de inyectar los campos @FXML. */
     @FXML
     private void initialize() {
         imgCarta.setImage(ImagenesCartas.reverso());
     }
 
+    public void setControlador(Controlador controlador) {
+        this.controlador = controlador;
+    }
+
+    /** Lo llama la VistaGrafica cuando el modelo avisó que hay una carta nueva. */
+    public void mostrarCarta(Carta carta, int puntaje, int restantes) {
+        imgCarta.setImage(ImagenesCartas.imagen(carta));
+        lblPuntaje.setText("Puntaje: " + puntaje);
+        lblRestantes.setText("Quedan: " + restantes);
+    }
+
+    // Los botones NO tocan la vista: solo le avisan al Controlador.
+    // La carta cambia cuando el modelo notifica (Observer).
+
     @FXML
     private void onMayor() {
-        System.out.println("Clic en Mayor");
+        controlador.apostar(Apuesta.MAYOR);
     }
 
     @FXML
     private void onMenor() {
-        System.out.println("Clic en Menor");
+        controlador.apostar(Apuesta.MENOR);
     }
 }
