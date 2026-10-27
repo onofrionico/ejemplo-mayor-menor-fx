@@ -14,6 +14,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 
@@ -72,6 +73,20 @@ public class GenerarCapturas {
         clic(stage, "#btnJugar");      // menú → mesa con el 5 de oros
         clic(stage, "#btnMayor");      // 11 de espadas: acierto
         guardar(stage, "juego-mesa.png");
+
+        clic(stage, "#btnMayor");      // 3 de copas: error → pantalla de resultado
+        guardar(stage, "juego-resultado.png");
+
+        clic(stage, "#btnJugarDeNuevo"); // vuelve a la mesa con puntaje 0
+        Label puntaje = (Label) stage.getScene().lookup("#lblPuntaje");
+        if (!"Puntaje: 0".equals(puntaje.getText())) {
+            throw new IllegalStateException("Jugar de nuevo no reinició el puntaje: " + puntaje.getText());
+        }
+        clic(stage, "#btnMenor");      // 11 de espadas: error
+        clic(stage, "#btnVolver");     // vuelve al menú
+        if (stage.getScene().lookup("#btnJugar") == null) {
+            throw new IllegalStateException("Volver al menú no mostró el menú");
+        }
         stage.close();
     }
 

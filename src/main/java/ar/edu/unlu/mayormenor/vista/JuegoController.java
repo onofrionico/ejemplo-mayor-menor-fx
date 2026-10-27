@@ -49,6 +49,14 @@ public class JuegoController {
         imgCarta.setImage(ImagenesCartas.imagen(carta));
         lblPuntaje.setText("Puntaje: " + puntaje);
         lblRestantes.setText("Quedan: " + restantes);
+        btnMayor.setDisable(false);
+        btnMenor.setDisable(false);
+    }
+
+    /** Cuando la partida termina ya no se puede apostar. */
+    public void deshabilitarApuestas() {
+        btnMayor.setDisable(true);
+        btnMenor.setDisable(true);
     }
 
     // Los botones NO tocan la vista: solo le avisan al Controlador.

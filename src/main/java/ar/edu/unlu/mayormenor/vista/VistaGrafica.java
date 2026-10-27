@@ -5,7 +5,6 @@ import ar.edu.unlu.mayormenor.modelo.Carta;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -53,12 +52,14 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarResultado(int puntaje, boolean ganada) {
-        // PROVISORIO: en el paso 5 esto pasa a ser una escena propia (resultado.fxml)
-        Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                (ganada ? "¡Ganaste!" : "Perdiste.") + " Puntaje: " + puntaje);
-        alert.initOwner(stage);
-        alert.showAndWait();
-        mostrarMenu();
+        // La partida terminó: que no se pueda seguir apostando en la mesa
+        if (juego != null) {
+            juego.deshabilitarApuestas();
+        }
+        // Cambio de escena: de la mesa a la pantalla de resultado
+        ResultadoController resultado = cargar("/fxml/resultado.fxml");
+        resultado.setControlador(controlador);
+        resultado.mostrar(puntaje, ganada);
     }
 
     /**
@@ -71,7 +72,13 @@ public class VistaGrafica implements IVista {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFxml));
             Parent raiz = loader.load();
+            // Opción A (la que usamos): una Scene nueva por pantalla.
+            //   La ventana toma el tamaño preferido de cada FXML.
             stage.setScene(new Scene(raiz));
+            // Opción B: reutilizar la misma Scene y cambiar solo su raíz:
+            //   if (stage.getScene() == null) stage.setScene(new Scene(raiz));
+            //   else stage.getScene().setRoot(raiz);
+            //   Conserva el tamaño de la ventana y las hojas de estilo de la Scene.
             stage.show();
             return loader.getController();
         } catch (IOException e) {
