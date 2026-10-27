@@ -13,6 +13,8 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.transform.Transform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
@@ -22,6 +24,7 @@ import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -76,6 +79,7 @@ public class GenerarCapturas {
         clic(stage, "#btnJugar");      // menú → mesa con el 5 de oros
         clic(stage, "#btnMayor");      // 11 de espadas: acierto
         guardar(stage, "juego-mesa.png");
+        guardarPortada(stage);
 
         clic(stage, "#btnMayor");      // 3 de copas: error → pantalla de resultado
         guardar(stage, "juego-resultado.png");
@@ -154,6 +158,19 @@ public class GenerarCapturas {
 
     private static void guardar(Stage stage, String archivo) throws Exception {
         escribir(stage.getScene().snapshot(null), archivo);
+    }
+
+    /** Portada del post (cover.jpg): la mesa al doble de resolución, en JPG. */
+    private static void guardarPortada(Stage stage) throws Exception {
+        SnapshotParameters parametros = new SnapshotParameters();
+        parametros.setTransform(Transform.scale(2, 2));
+        WritableImage imagen = stage.getScene().getRoot().snapshot(parametros, null);
+        BufferedImage conAlfa = SwingFXUtils.fromFXImage(imagen, null);
+        BufferedImage rgb = new BufferedImage(conAlfa.getWidth(), conAlfa.getHeight(), BufferedImage.TYPE_INT_RGB);
+        rgb.createGraphics().drawImage(conAlfa, 0, 0, null);
+        File salida = new File(DESTINO, "cover.jpg");
+        ImageIO.write(rgb, "jpg", salida);
+        System.out.println("Captura: " + salida.getPath());
     }
 
     private static void escribir(WritableImage imagen, String archivo) throws Exception {

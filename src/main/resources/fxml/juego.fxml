@@ -17,7 +17,8 @@
 <!-- La mesa: la carta en el centro, los botones de apuesta abajo, el menú y la información arriba. -->
 <BorderPane prefWidth="420.0" prefHeight="540.0"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="ar.edu.unlu.mayormenor.vista.JuegoController">
+            fx:controller="ar.edu.unlu.mayormenor.vista.JuegoController"
+            stylesheets="@../styles/juego.css" styleClass="mesa">
     <top>
         <VBox>
             <MenuBar>

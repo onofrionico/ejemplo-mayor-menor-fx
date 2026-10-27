@@ -9,7 +9,8 @@
 <!-- Pantalla de fin de partida -->
 <VBox alignment="CENTER" spacing="20.0" prefWidth="420.0" prefHeight="360.0"
       xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="ar.edu.unlu.mayormenor.vista.ResultadoController">
+      fx:controller="ar.edu.unlu.mayormenor.vista.ResultadoController"
+      stylesheets="@../styles/juego.css" styleClass="mesa">
     <padding>
         <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
     </padding>
