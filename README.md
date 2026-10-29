@@ -39,6 +39,10 @@ La historia del repo está armada para recorrerla con la autoguía. Cada paso ti
 
 ### Demos de componentes
 
+Desde IntelliJ: abrí `Lanzador`, comentá la línea del juego, descomentá la demo que quieras ver y ejecutá `Lanzador` con ▶. No corras la demo con ▶ desde su propia clase: da `JavaFX runtime components are missing`.
+
+Desde una terminal:
+
 ```bash
 ./mvnw javafx:run -Djavafx.mainClass=ar.edu.unlu.mayormenor.demos.DemoLayouts
 ./mvnw javafx:run -Djavafx.mainClass=ar.edu.unlu.mayormenor.demos.DemoMenus
